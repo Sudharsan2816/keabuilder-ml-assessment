@@ -1,0 +1,123 @@
+[
+  {
+    "test_case": "leads corpus — coaching program",
+    "input": {
+      "query": "I want to sell my coaching program online",
+      "top_k": 3,
+      "corpus_type": "leads"
+    },
+    "expected_output": {
+      "query": "I want to sell my coaching program online",
+      "corpus_type": "leads",
+      "top_match": {
+        "id": 2,
+        "text": "Looking for lead capture tools for my coaching business",
+        "category": "lead_capture",
+        "similarity_score": 0.3891,
+        "extra_fields": { "lead_score": "WARM" }
+      },
+      "all_matches": [
+        {
+          "id": 2,
+          "text": "Looking for lead capture tools for my coaching business",
+          "category": "lead_capture",
+          "similarity_score": 0.3891,
+          "extra_fields": { "lead_score": "WARM" }
+        },
+        {
+          "id": 5,
+          "text": "Building a webinar funnel to sell my online course",
+          "category": "funnel",
+          "similarity_score": 0.3124,
+          "extra_fields": { "lead_score": "HOT" }
+        },
+        {
+          "id": 4,
+          "text": "Want to create landing pages that convert visitors to leads",
+          "category": "landing_page",
+          "similarity_score": 0.0812,
+          "extra_fields": { "lead_score": "WARM" }
+        }
+      ],
+      "method": "TF-IDF Cosine Similarity (ngram_range=1-2, stop_words=english)",
+      "corpus_size": 10,
+      "production_upgrade": "Upgrade to sentence-transformers/all-MiniLM-L6-v2 + pgvector for semantic search. See GET /architecture for migration steps."
+    }
+  },
+  {
+    "test_case": "leads corpus — email automation",
+    "input": {
+      "query": "automate email follow-ups for my leads",
+      "top_k": 2,
+      "corpus_type": "leads"
+    },
+    "expected_output": {
+      "query": "automate email follow-ups for my leads",
+      "corpus_type": "leads",
+      "top_match": {
+        "id": 3,
+        "text": "Need automation for follow-up emails after form submission",
+        "category": "automation",
+        "similarity_score": 0.4756,
+        "extra_fields": { "lead_score": "HOT" }
+      },
+      "all_matches": [
+        {
+          "id": 3,
+          "text": "Need automation for follow-up emails after form submission",
+          "category": "automation",
+          "similarity_score": 0.4756,
+          "extra_fields": { "lead_score": "HOT" }
+        },
+        {
+          "id": 8,
+          "text": "Need to automate WhatsApp follow-up messages for my leads",
+          "category": "automation",
+          "similarity_score": 0.3901,
+          "extra_fields": { "lead_score": "HOT" }
+        }
+      ],
+      "method": "TF-IDF Cosine Similarity (ngram_range=1-2, stop_words=english)",
+      "corpus_size": 10,
+      "production_upgrade": "Upgrade to sentence-transformers/all-MiniLM-L6-v2 + pgvector for semantic search. See GET /architecture for migration steps."
+    }
+  },
+  {
+    "test_case": "prompts corpus — fitness ad copy",
+    "input": {
+      "query": "write ad copy for fitness coaching",
+      "top_k": 2,
+      "corpus_type": "prompts"
+    },
+    "expected_output": {
+      "query": "write ad copy for fitness coaching",
+      "corpus_type": "prompts",
+      "top_match": {
+        "id": 101,
+        "text": "Write a compelling Facebook ad for my online fitness coaching",
+        "category": "ad_copy",
+        "similarity_score": 0.5823,
+        "extra_fields": { "type": "prompt" }
+      },
+      "all_matches": [
+        {
+          "id": 101,
+          "text": "Write a compelling Facebook ad for my online fitness coaching",
+          "category": "ad_copy",
+          "similarity_score": 0.5823,
+          "extra_fields": { "type": "prompt" }
+        },
+        {
+          "id": 103,
+          "text": "Create a landing page headline for a weight loss program",
+          "category": "landing_page",
+          "similarity_score": 0.0641,
+          "extra_fields": { "type": "prompt" }
+        }
+      ],
+      "method": "TF-IDF Cosine Similarity (ngram_range=1-2, stop_words=english)",
+      "corpus_size": 5,
+      "production_upgrade": "Upgrade to sentence-transformers/all-MiniLM-L6-v2 + pgvector for semantic search. See GET /architecture for migration steps."
+    }
+  }
+]
