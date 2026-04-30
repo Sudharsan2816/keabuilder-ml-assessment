@@ -117,7 +117,7 @@ def find_similar(query_input: QueryInput):
     Find most similar entries to a user query using TF-IDF cosine similarity.
 
     - **corpus_type**: 'leads' (lead form inputs) or 'prompts' (AI prompt history)
-    - **top_k**: Number of matches to return (default 3)
+    - **top_k**: Number of matches to return (default 3, must be >= 1)
     - Returns ranked results with similarity scores
     """
     if not query_input.query or len(query_input.query.strip()) < 3:
@@ -134,7 +134,13 @@ def find_similar(query_input: QueryInput):
         )
 
     corpus = CORPUS_MAP[corpus_type]
-    top_k = min(query_input.top_k, len(corpus))
+
+    # FIX BUG-01 / BUG-02: top_k=0 or negative produced an empty results list,
+    # causing an IndexError on matches[0] in the return statement.
+    top_k = query_input.top_k if query_input.top_k is not None else 3
+    if top_k < 1:
+        raise HTTPException(status_code=400, detail="top_k must be at least 1")
+    top_k = min(top_k, len(corpus))
 
     try:
         matches = run_similarity_search(query_input.query, corpus, top_k)
