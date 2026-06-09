@@ -1,128 +1,128 @@
-# KeaBuilder ML Engineer Assessment
-**Dream Reflection Media — ML Engineer Role**
+# Semantic Similarity Search API
 
----
+FastAPI ML service for text similarity search, with a PostgreSQL/pgvector schema for production semantic search.
 
-## What's Built
+This repository was previously named `keabuilder-ml-assessment`. The recruiter-friendly name should be `semantic-similarity-search-api` because the core value is an ML search API plus production schema design, not the assessment context.
 
-| Demo | Description | Run Port |
-|------|-------------|----------|
-| `demo1_similarity_search/` | Text similarity search API (FastAPI + TF-IDF) | 8002 |
-| `demo2_schema_design/` | PostgreSQL schema for ML inputs + predictions | — |
-| `docs/` | Full ML system design answers (all 7 questions) | — |
+## What It Builds
 
----
+### Similarity Search API
 
-## Quick Start
+The API compares a user query against curated corpora and returns ranked matches.
+
+Current implementation:
+
+- TF-IDF vectorization with scikit-learn.
+- Cosine similarity ranking.
+- Two corpus types: leads and prompts.
+- FastAPI endpoints with Pydantic validation.
+- Test coverage for happy paths and validation behavior.
+
+Production upgrade path:
+
+- Replace TF-IDF with sentence-transformer embeddings.
+- Store embeddings in PostgreSQL with pgvector.
+- Add approximate nearest-neighbor indexes.
+- Track model versions, latency, confidence, and prediction metadata.
+
+### Database Schema
+
+The repo includes a PostgreSQL schema for storing:
+
+- Users.
+- User inputs.
+- Model predictions.
+- Embeddings with pgvector.
+- Analytics and similarity search indexes.
+
+## Architecture
+
+```text
+Client
+  -> FastAPI
+  -> request validation
+  -> corpus loader
+  -> TF-IDF vectorizer
+  -> cosine similarity
+  -> ranked matches
+
+Production target:
+Client
+  -> API
+  -> embedding model
+  -> PostgreSQL + pgvector
+  -> ranked semantic matches
+  -> prediction logging
+```
+
+## Tech Stack
+
+- Python, FastAPI, Pydantic
+- scikit-learn TF-IDF and cosine similarity
+- PostgreSQL schema design
+- pgvector production design
+- pytest test suite
+
+## Run Locally
 
 ```bash
-# Clone and install
-git clone https://github.com/Sudharsan2816/keabuilder-ml-assessment
-cd keabuilder-ml-assessment
+git clone https://github.com/Sudharsan2816/semantic-similarity-search-api
+cd semantic-similarity-search-api
 pip install -r requirements.txt
 
-# Run similarity search API
 cd demo1_similarity_search
 python -m uvicorn app:app --reload --port 8002
 ```
 
-Open: http://localhost:8002/docs
+Open API docs at http://localhost:8002/docs.
 
----
-
-## Test the API
+## Example Requests
 
 ```bash
-# Find similar leads
 curl -X POST http://localhost:8002/find-similar \
   -H "Content-Type: application/json" \
   -d '{"query": "I want to sell my coaching program online", "top_k": 3, "corpus_type": "leads"}'
+```
 
-# Find similar prompts
+```bash
 curl -X POST http://localhost:8002/find-similar \
   -H "Content-Type: application/json" \
   -d '{"query": "write ad copy for fitness coaching", "top_k": 2, "corpus_type": "prompts"}'
-
-# View full corpus
-curl http://localhost:8002/corpus/leads
-curl http://localhost:8002/corpus/prompts
-
-# Current vs production architecture
-curl http://localhost:8002/architecture
 ```
 
----
+## Test
 
-## Interactive API Docs
-http://localhost:8002/docs
-
----
-
-## Architecture Comparison
-`GET /architecture` returns a live JSON comparison of:
-- **Current:** TF-IDF cosine similarity (zero-GPU, instant startup)
-- **Production:** sentence-transformers + pgvector (semantic search)
-- **Face similarity:** InsightFace ArcFace embeddings + pgvector
-
----
-
-## ML System Design Answers
-All 7 questions answered in full → [`docs/ml_system_design_answers.md`](docs/ml_system_design_answers.md)
-
-| Question | Topic |
-|----------|-------|
-| Q1 | Similarity search — current implementation + production upgrade |
-| Q2 | Serving Python ML model with Node.js backend |
-| Q3 | Database schema design (users, inputs, predictions, embeddings) |
-| Q4 | Handling slow ML responses in UI (optimistic UI, polling, streaming) |
-| Q5 | Notebook → production migration challenges |
-| Q6 | LoRA for face consistency (DreamBooth-SDXL, training params, pricing) |
-| Q7 | Tools and frameworks |
-
----
-
-## Schema Design
-Full PostgreSQL schema → [`demo2_schema_design/schema.sql`](demo2_schema_design/schema.sql)
-
-Design rationale → [`demo2_schema_design/schema_explained.md`](demo2_schema_design/schema_explained.md)
-
-Sample analytics queries → [`demo2_schema_design/sample_queries.sql`](demo2_schema_design/sample_queries.sql)
-
----
-
-## Project Structure
-
-```
-keabuilder-ml-assessment/
-├── .env.example
-├── .gitignore
-├── README.md
-├── requirements.txt
-├── demo1_similarity_search/
-│   ├── app.py                  # FastAPI app + TF-IDF search
-│   ├── models.py               # Pydantic input/output models
-│   ├── data.py                 # Leads + prompts corpus + architecture data
-│   ├── requirements.txt
-│   └── sample_output.json      # 3 test cases with expected outputs
-├── demo2_schema_design/
-│   ├── schema.sql              # Full PostgreSQL + pgvector schema
-│   ├── schema_explained.md     # Design rationale for every decision
-│   └── sample_queries.sql      # Analytics + performance queries
-└── docs/
-    └── ml_system_design_answers.md  # All 7 questions answered
+```bash
+cd demo1_similarity_search
+python -m pytest test_app.py -q
 ```
 
----
+## Schema Files
 
-## Tech Stack
+- `demo2_schema_design/schema.sql`
+- `demo2_schema_design/schema_explained.md`
+- `demo2_schema_design/sample_queries.sql`
 
-| Layer | Technology |
-|-------|-----------|
-| API | FastAPI + uvicorn |
-| ML | scikit-learn TF-IDF + cosine similarity |
-| Database | PostgreSQL + pgvector |
-| Production ML | sentence-transformers/all-MiniLM-L6-v2 |
-| Runtime | Python 3.12 |
-| Validation | Pydantic v2 |
-| Production Queue | SQS / BullMQ |
-| Production Cache | Redis |
+## Portfolio Value
+
+This repo demonstrates:
+
+- ML API design beyond notebooks.
+- Ranking and similarity search fundamentals.
+- API validation and test coverage.
+- Database schema design for ML inputs, predictions, and embeddings.
+- A clear migration path from baseline lexical search to semantic vector search.
+
+## Current Production Gaps
+
+- Implement the sentence-transformers + pgvector version, not only document it.
+- Add Docker Compose for API plus PostgreSQL.
+- Add model/version metadata to API responses.
+- Add search quality metrics such as recall@k and MRR.
+- Add CI to run tests automatically.
+
+## Recommended GitHub Metadata
+
+- Repository name: `semantic-similarity-search-api`
+- Description: `FastAPI similarity search service with TF-IDF baseline, pytest coverage, PostgreSQL schema design, and a documented sentence-transformers + pgvector upgrade path.`
+- Topics: `python`, `fastapi`, `machine-learning`, `similarity-search`, `tfidf`, `scikit-learn`, `postgresql`, `pgvector`, `pytest`, `ml-engineering`
